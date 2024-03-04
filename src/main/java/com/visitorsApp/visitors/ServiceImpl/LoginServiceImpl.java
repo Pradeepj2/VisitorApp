@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,11 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public visitorLogin findByMobNo(String mobNo) {
 		return loginVisitorDao.findByMobNo(mobNo);
+	}
+
+	@Override
+	public List<Visitor> getVisitor() {
+	return visitorDao.findAll();
 	}
 
 }

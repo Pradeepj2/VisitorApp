@@ -1,6 +1,7 @@
 package com.visitorsApp.visitors.Controller;
 
 import java.awt.font.ImageGraphicAttribute;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,21 +9,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.visitorsApp.visitors.Dao.loginVisitorDao;
 import com.visitorsApp.visitors.Model.Visitor;
-import com.visitorsApp.visitors.Model.VisitorModalDto;
+
 import com.visitorsApp.visitors.Model.visitorLogin;
 import com.visitorsApp.visitors.Response.GeneralMessage;
 import com.visitorsApp.visitors.Response.ServiceResponse;
@@ -126,5 +122,17 @@ public class LoginController {
 			return new ServiceResponse<>(new GeneralMessage<>("Something went wrong", 1, 500), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 			 	
+	}
+	
+	@RequestMapping(value = "/getVisitor", method = RequestMethod.GET )
+	public ServiceResponse<?> getAllVisitors() {  
+		
+		try {
+			List<Visitor> visitors =  loginService.getVisitor();
+			return new ServiceResponse<>(new GeneralMessage<>("Data found",visitors, 1, 200), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ServiceResponse<>(new GeneralMessage<>("Something went wrong", 1, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 }
