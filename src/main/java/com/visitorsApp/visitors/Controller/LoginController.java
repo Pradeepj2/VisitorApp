@@ -9,16 +9,19 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import com.visitorsApp.visitors.Model.Visitor;
-
+import com.visitorsApp.visitors.Model.VisitorModalDto;
 import com.visitorsApp.visitors.Model.visitorLogin;
 import com.visitorsApp.visitors.Response.GeneralMessage;
 import com.visitorsApp.visitors.Response.ServiceResponse;
@@ -113,10 +116,10 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/newVisitor", method = RequestMethod.POST )
-	public ServiceResponse<?> newVisitor( @RequestPart("img") MultipartFile img ,  @RequestPart("newVisitor") Visitor visitor) {  
+	public ServiceResponse<?> newVisitor( @ModelAttribute VisitorModalDto visitor) {  
 		
 		try {
-			loginService.saveVisitor(visitor , img);
+			loginService.saveVisitor(visitor);
 			return new ServiceResponse<>(new GeneralMessage<>("new Visitor Registered", 1, 200), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ServiceResponse<>(new GeneralMessage<>("Something went wrong", 1, 500), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -130,6 +133,28 @@ public class LoginController {
 		try {
 			List<Visitor> visitors =  loginService.getVisitor();
 			return new ServiceResponse<>(new GeneralMessage<>("Data found",visitors, 1, 200), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ServiceResponse<>(new GeneralMessage<>("Something went wrong", 1, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@RequestMapping(value = "/getVisitor/{id}", method = RequestMethod.GET )
+	public ServiceResponse<?> getAllVisitorsById(@PathVariable("id") int id) {  
+		
+		try {
+			return new ServiceResponse<>(new GeneralMessage<>("Data found",loginService.findById(id), 1, 200), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ServiceResponse<>(new GeneralMessage<>("Something went wrong", 1, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@RequestMapping(value = "/hostVerification", method = RequestMethod.POST)
+	public ServiceResponse<?> hostVerification() {  
+		
+		try {
+			return new ServiceResponse<>(new GeneralMessage<>("Host verified", 1, 200), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ServiceResponse<>(new GeneralMessage<>("Something went wrong", 1, 500), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
